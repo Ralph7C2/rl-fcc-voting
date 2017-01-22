@@ -1,0 +1,27 @@
+{
+  "name": "rl-fcc-voting",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ralph7C2/rl-fcc-voting.git"
+  },
+  "author": "Ralph Landon",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Ralph7C2/rl-fcc-voting/issues"
+  },
+  "homepage": "https://github.com/Ralph7C2/rl-fcc-voting#readme",
+  "dependencies": {
+    "body-parser": "^1.16.0",
+    "cookie-parser": "^1.4.3",
+    "dotenv": "^4.0.0",
+    "express": "^4.14.0",
+    "passport": "^0.3.2",
+    "passport-github": "^1.1.0"
+  }
+}
