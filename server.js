@@ -6,7 +6,7 @@ const passport = require('passport');
 
 const githubStrategy = require('passport-github').Strategy;
 passport.use(new githubStrategy({
-	clientID: process.env.GITHUB_CLIENT_ID,
+	clientID+: process.env.GITHUB_CLIENT_ID,
 	clientSecret: process.env.GITHUB_CLIENT_SECRET,
 	callbackURL: process.env.GITHUB_CLIENT_CALLBACK_URL
 },
@@ -30,4 +30,4 @@ app.get('/auth/github/callback', passport.authenticate('github', {failureRedirec
 var port = process.env.PORT || 4040;
 app.listen(port, function() {
 	console.log("Listening on port "+port);
-}); 
+}); -
