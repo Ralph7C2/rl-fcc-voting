@@ -1,5 +1,5 @@
 const express = require('express');
-
+const dotenv = require('dotenv').load();
 var app = express();
 
 app.get('/', function(req, res) {
@@ -7,6 +7,6 @@ app.get('/', function(req, res) {
 });
 
 var port = process.env.PORT || 4040;
-app.listen(port, () => {
+app.listen(port, function() {
 	console.log("Listening on port "+port);
-});
+}); 
