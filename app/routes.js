@@ -52,6 +52,10 @@ module.exports = function(app, passport) {
 	
 	app.post('/createPoll', isLoggedIn, pollController.createPoll);
 	
+	app.get('/viewPoll/:id', function(req, res) {
+		console.log(req.params.id);
+	});
+	
 	function isLoggedIn(req, res, next) {
 		if(req.isAuthenticated())
 			return next();
