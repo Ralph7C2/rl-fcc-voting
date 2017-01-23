@@ -1,0 +1,53 @@
+<!-- views/index.ejs -->
+<!doctype html>
+<html lang = "en">
+<head>
+    <title>FCC Voting App</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+
+</head>
+<body>
+<nav class="navbar navbar-inverse">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<a class="navbar-brand" href='/'>FCC Voting App</a>
+		</div>
+		<ul class="nav navbar-nav navbar-right">
+		<% if(user) { %>
+					<li><a href='/profile'><span class="glyphicon glyphicon-user"></span>
+					<% if(user.firstname) { %>
+						<%= user.firstname %>
+					<% } else { %>
+						<%= user.local.email %>
+					<% } %>
+					</a></li>
+			<li><a href='/logout'><span class="glyphicon glyphicon-log-out"></span>Logout</a><li>
+		
+		<% } else { %> 
+			<li><a href='/login'><span class="glypicon glyphicon-log-in"></span>Login</a></li>
+			<li><a href='/signup'><span class="glyphicon glyphicon-plus-sign"></span>Signup</a></li>
+		<% } %>
+		</ul>
+	</div>
+</nav>
+
+<div class="container">
+	<% if (!user) { %>
+	<div class="jumbotron text-center">
+    <h1>Voting!</h1>
+		<p class="lead">View the list of polls and vote, or sign in to monitor your polls and create new ones!</p>
+  </div>
+	<% } else { %>
+	<a href='/createPoll'>Create a poll!</a>
+	<% } %>
+	<ul>
+	<% for(i = 0;i<polls.length;i++) { %>
+		<li><%= polls[i].title %></li>
+		<% } %>
+	</ul>
+</div>
+</body>
+</html>

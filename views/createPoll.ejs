@@ -1,0 +1,66 @@
+<!-- views/index.ejs -->
+<!doctype html>
+<html lang = "en">
+<head>
+    <title>FCC Voting App</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+		<script src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+</head>
+<body>
+<nav class="navbar navbar-inverse">
+	<div class="container-fluid">
+		<div class="navbar-header">
+			<a class="navbar-brand" href='/'>FCC Voting App</a>
+		</div>
+		<ul class="nav navbar-nav navbar-right">
+			<li><a href='/profile'><span class="glyphicon glyphicon-user"></span>
+					<% if(user.firstname) { %>
+						<%= user.firstname %>
+					<% } else { %>
+						<%= user.local.email %>
+					<% } %>
+					</a></li>
+			<li><a href='/logout'><span class="glyphicon glyphicon-log-out"></span>Logout</a><li>
+		</ul>
+	</div>
+</nav>
+
+<div class="container">
+	<div class="col-sm-6 col-offset-sm-3">
+		<h1>Create a Poll</h1>
+		
+		<% if (message.length > 0) { %>
+			<div class="alert alert-danger"><%=message%></div>
+		<% } %>
+		
+		<form action='/createPoll' method='post'>
+			<div class="form-group">
+				<label>Title</label>
+				<input type="text" class="form-control" name="title">
+			</div>
+			<div class="form-group">
+				<label>Options</label>
+				<input type="text" class="form-control" name="opt1">
+				<input type="text" class="form-control" name="opt2">
+				<div id="extraOptions"></div>
+				<button type="button" id="addOption" class="btn btn-info">Add option</button>
+			</div>
+			<button type="submit" class="btn btn-lg btn-primary">Create</button>
+		</form>
+	</div>
+</div>
+<script>
+$(document).ready(function() {
+	var optCount = 3;
+	$('#addOption').click(function() {
+		$('#extraOptions').append('<input type="text" class="form-control" name="opt'+optCount+'">');
+		optCount++;
+	});
+});
+</script>
+</body>
+</html>

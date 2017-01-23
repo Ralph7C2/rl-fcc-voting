@@ -1,33 +1,40 @@
-const express = require('express');
 require('dotenv').load();
-const cookieParser = require('cookie-parser');
-const bodyParser = require('body-parser');
-const passport = require('passport');
-
-const githubStrategy = require('passport-github').Strategy;
-passport.use(new githubStrategy({
-	clientID+: process.env.GITHUB_CLIENT_ID,
-	clientSecret: process.env.GITHUB_CLIENT_SECRET,
-	callbackURL: process.env.GITHUB_CLIENT_CALLBACK_URL
-},
-function(accessToken, refreshToken, profile, cb) {
-	User.findOrCreate({gihubId: profile.id }, function(err, user) {
-		return cb(err, user)
-	});
-}));
-
+var express = require('express');
 var app = express();
+var port = process.env.PORT || 8080;
+var mongoose = require('mongoose');
+var passport = require('passport');
+var flash = require('connect-flash');
 
-app.get('/', express.static('public'));
+var morgan = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var session = require('express-session');
 
-app.get('/auth/github', passport.authenticate('github'));
-app.get('/auth/github/callback', passport.authenticate('github', {failureRedirect: '/login'}),
-	function(req, res) {
-		res.redirect('/');
-	}
-);
+var configDB = require('./config/database.js');
 
-var port = process.env.PORT || 4040;
-app.listen(port, function() {
-	console.log("Listening on port "+port);
-}); -
+mongoose.connect(configDB.url);
+mongoose.Promise = global.Promise;
+require('./config/passport')(passport);
+
+app.use(function(req, res, next) {
+	console.log("First use");
+	next();
+});
+
+app.use(morgan('dev'));
+app.use(cookieParser());
+app.use(bodyParser.urlencoded({extended : true}));
+
+app.set('view engine', 'ejs');
+
+//for passport
+app.use(session({secret : 'keyboard cat'}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+
+require('./app/routes.js')(app, passport);
+
+app.listen(port);
+console.log("Ready to rock on port "+port);
