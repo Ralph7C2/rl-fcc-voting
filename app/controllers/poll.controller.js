@@ -37,7 +37,11 @@ service.getPollById = function(id, cb) {
 
 service.vote = function(req, res) {
 	Poll.findOne({_id : req.params.id}, function(err, poll) {
-		res.send("Would vote on "+poll.options[parseInt(req.body.voteOpt)].opt+" in poll "+poll.title);
+		var options = poll.options;
+		options[parseInt(req.body.voteOpt)].count++;
+		Poll.findOneAndUpdate({_id : req.params.id}, { options : options }, function(err, poll) {
+			res.send("Voted on "+poll.options[parseInt(req.body.voteOpt)].opt+" in poll "+poll.title);
+		});
 	});
 };
 
