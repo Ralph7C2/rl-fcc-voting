@@ -1,4 +1,4 @@
-<!-- views/index.ejs -->
+<!-- views/viewPoll.ejs -->
 <!doctype html>
 <html lang = "en">
 <head>
@@ -7,6 +7,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+		<script src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
 
 </head>
 <body>
@@ -35,19 +36,22 @@
 </nav>
 
 <div class="container">
-	<% if (!user) { %>
-	<div class="jumbotron text-center">
-    <h1>Voting!</h1>
-		<p class="lead">View the list of polls and vote, or sign in to monitor your polls and create new ones!</p>
-  </div>
-	<% } else { %>
-	<a href='/createPoll'>Create a poll!</a>
-	<% } %>
-	<ul>
-	<% for(i = 0;i<polls.length;i++) { %>
-		<li><a href='/viewPoll/<%= polls[i]._id %>'><%= polls[i].title %></a></li>
-		<% } %>
-	</ul>
+	<div class="col-sm-6 col-offset-sm-3">
+<% if(poll) { %>
+	<h1><%= poll.title %></h1>
+		
+		<form action='/viewPoll/<%= poll.id %>' method='post'>
+			<% for(var i = 0;i<poll.options.length;i++) { %>
+			<div class="radio">
+				<label><input type="radio" name="voteOpt" value='<%=i%>'><%=poll.options[i].opt%></label>
+			</div>
+			<% } %>
+			<button type='submit' class='btn btn-lg btn-primary'>Vote</button>
+		</form>
+<% } else { %>
+	<h1>Error loading poll!!</h1>
+<% } %>
+	</div>
 </div>
 </body>
 </html>

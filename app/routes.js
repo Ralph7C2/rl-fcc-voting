@@ -3,7 +3,7 @@ var pollController = require('./controllers/poll.controller.js');
 module.exports = function(app, passport) {
 	
 	app.get('/', function(req, res) {
-		var pollList = pollController.loadPolls(function(polls) {
+		pollController.loadPolls(function(polls) {
 			res.render('index.ejs', {
 			user : req.user,
 			polls : polls
@@ -53,8 +53,15 @@ module.exports = function(app, passport) {
 	app.post('/createPoll', isLoggedIn, pollController.createPoll);
 	
 	app.get('/viewPoll/:id', function(req, res) {
-		console.log(req.params.id);
+		pollController.getPollById(req.params.id, function(poll) {
+			res.render('viewPoll.ejs', {
+				user : req.user,
+				poll : poll
+			});
+		});
 	});
+
+	app.post('/viewPoll/:id', pollController.vote);
 	
 	function isLoggedIn(req, res, next) {
 		if(req.isAuthenticated())

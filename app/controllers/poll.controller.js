@@ -25,6 +25,20 @@ service.loadPolls = function(cb) {
 		console.log(polls);
 		cb(polls);
 	});
-}
+};
+
+service.getPollById = function(id, cb) {
+	Poll.findOne({_id : id}, function(err, poll) {
+		console.log(poll);
+		if(err) return res.send(err);
+		cb(poll);
+	});
+};
+
+service.vote = function(req, res) {
+	Poll.findOne({_id : req.params.id}, function(err, poll) {
+		res.send("Would vote on "+poll.options[parseInt(req.body.voteOpt)].opt+" in poll "+poll.title);
+	});
+};
 
 module.exports = service;
