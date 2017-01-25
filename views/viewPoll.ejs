@@ -87,12 +87,15 @@ var myChart = new Chart(ctx, {
 		$('#voteButton').click(function() {
 			$.post('/api/vote', {
 				'pollId' : '<%=poll._id %>',
-				'userId' : '<% if(user) {%> <%=user._id %> <% } else { %> IP <% } %>',
+				'userId' : '<% if(user) {%><%=user._id%><% } else { %>IP<% } %>',
 				'opt'		 : $('input[type="radio"]:checked').val()
 			}, function(res) {
 				if(res.success) {
 					myChart.data.datasets[0].data[parseInt($('input[type="radio"]:checked').val())]++;
 					myChart.update();
+					alert("Voted on "+res.option);
+				} else {
+					alert("You have already voted");
 				}
 			});
 		});

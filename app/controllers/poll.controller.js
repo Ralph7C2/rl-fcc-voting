@@ -31,7 +31,7 @@ service.getPollById = function(id) {
 	var deferred = Q.defer();
   
 	Poll.findOne({_id : id}, function(err, poll) {
-		if(err) deferred.eject(err);
+		if(err) deferred.reject(err);
 		if(poll) {
 			deferred.resolve(poll);
 		} else {
@@ -44,26 +44,35 @@ service.getPollById = function(id) {
 service.vote = function(pollId, user, opt) {
 	var deferred = Q.defer();
 	
-	var thePoll;
-	
-	Poll.findOne({_id : pollId}, function(err, poll) {
-		if(err) deferred.reject(err);
-		thePoll = poll;
-		Poll.findOne({'voters.voterId' : user}, function(err, vote) {
-			console.log("Found Voter");
-			success=false;
-		});
-		if(!success) {
-			return;
-		}
-		var options = poll.options;
-		options[parseInt(opt)].count++;
-		Poll.findOneAndUpdate({_id : pollId}, { options : options }, function(err, poll) {
+	service.getPollById(pollId).then(function(poll) {
+		if(poll) {
+			var voterFound = false;
+			poll.voters.forEach(function(voter) {
+				if(voter.voterId === user) {
+					console.log("Voter found");
+					voterFound = true;
+					deferred.reject();
+					console.log("Past resolve!");
+				}
+			});
+			if(voterFound) return;
+			console.log("Beyond voter forEach loop!");
+			var options = poll.options;
+			console.log(options);
+			options[parseInt(opt)].count++;
+			console.log(options);
+			Poll.findOneAndUpdate({"_id" : pollId}, { options : options }, function(err, poll) {
+				if(err) console.log(err)
+				console.log(poll);
+			});
 			poll.voters.push({voterId : user});
 			poll.save();
-		});
+			deferred.resolve(options[parseInt(opt)].opt);
+		} else {
+			deferred.reject();
+		}
 	});
-	return success;
+	return deferred.promise;
 };
 
 module.exports = service;
