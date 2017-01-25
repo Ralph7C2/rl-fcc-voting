@@ -1,5 +1,5 @@
 var Poll = require('../models/poll');
-
+var Q = require('q');
 service = {};
 
 service.createPoll = function(req, res) {
@@ -27,22 +27,43 @@ service.loadPolls = function(cb) {
 	});
 };
 
-service.getPollById = function(id, cb) {
+service.getPollById = function(id) {
+	var deferred = Q.defer();
+  
 	Poll.findOne({_id : id}, function(err, poll) {
-		console.log(poll);
-		if(err) return res.send(err);
-		cb(poll);
+		if(err) deferred.eject(err);
+		if(poll) {
+			deferred.resolve(poll);
+		} else {
+			deferred.resolve();
+		}
 	});
+	return deferred.promise;
 };
 
-service.vote = function(req, res) {
-	Poll.findOne({_id : req.params.id}, function(err, poll) {
+service.vote = function(pollId, user, opt) {
+	var deferred = Q.defer();
+	
+	var thePoll;
+	
+	Poll.findOne({_id : pollId}, function(err, poll) {
+		if(err) deferred.reject(err);
+		thePoll = poll;
+		Poll.findOne({'voters.voterId' : user}, function(err, vote) {
+			console.log("Found Voter");
+			success=false;
+		});
+		if(!success) {
+			return;
+		}
 		var options = poll.options;
-		options[parseInt(req.body.voteOpt)].count++;
-		Poll.findOneAndUpdate({_id : req.params.id}, { options : options }, function(err, poll) {
-			res.send("Voted on "+poll.options[parseInt(req.body.voteOpt)].opt+" in poll "+poll.title);
+		options[parseInt(opt)].count++;
+		Poll.findOneAndUpdate({_id : pollId}, { options : options }, function(err, poll) {
+			poll.voters.push({voterId : user});
+			poll.save();
 		});
 	});
+	return success;
 };
 
 module.exports = service;

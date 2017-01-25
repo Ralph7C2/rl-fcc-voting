@@ -34,6 +34,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
+app.use('/api', require('./api/routes.js'));
+
 require('./app/routes.js')(app, passport);
 
 app.listen(port);

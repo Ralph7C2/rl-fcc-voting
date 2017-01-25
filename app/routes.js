@@ -53,16 +53,18 @@ module.exports = function(app, passport) {
 	app.post('/createPoll', isLoggedIn, pollController.createPoll);
 	
 	app.get('/viewPoll/:id', function(req, res) {
-		pollController.getPollById(req.params.id, function(poll) {
-			res.render('viewPoll.ejs', {
-				user : req.user,
-				poll : poll
-			});
+		pollController.getPollById(req.params.id).then(function(poll) {
+			if(poll) {
+				res.render('viewPoll.ejs', {
+					user : req.user,
+					poll : poll
+				});
+			} else {
+				res.send("Could not find poll!");
+			}
 		});
 	});
 
-	app.post('/viewPoll/:id', pollController.vote);
-	
 	function isLoggedIn(req, res, next) {
 		if(req.isAuthenticated())
 			return next();

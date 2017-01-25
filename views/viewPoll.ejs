@@ -8,7 +8,11 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
 		<script src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
-
+		<style>
+			body {
+				margin-bottom: 20px;
+			}
+		</style>
 </head>
 <body>
 <nav class="navbar navbar-inverse">
@@ -51,22 +55,6 @@ var myChart = new Chart(ctx, {
         datasets: [{
             label: '# of Votes',
             data: [<% for(var i = 0;i<poll.options.length;i++) { %> <%=poll.options[i].count %>, <%}%>],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255,99,132,1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
             borderWidth: 1
         }]
     },
@@ -87,12 +75,28 @@ var myChart = new Chart(ctx, {
 				<label><input type="radio" name="voteOpt" value='<%=i%>'><%=poll.options[i].opt%></label>
 			</div>
 			<% } %>
-			<button type='submit' class='btn btn-lg btn-primary'>Vote</button>
+			<button type='button' class='btn btn-lg btn-primary' id='voteButton'>Vote</button>
 		</form>
 <% } else { %>
 	<h1>Error loading poll!!</h1>
 <% } %>
 	</div>
 </div>
+<script>
+	$(document).ready(function() {
+		$('#voteButton').click(function() {
+			$.post('/api/vote', {
+				'pollId' : '<%=poll._id %>',
+				'userId' : '<% if(user) {%> <%=user._id %> <% } else { %> IP <% } %>',
+				'opt'		 : $('input[type="radio"]:checked').val()
+			}, function(res) {
+				if(res.success) {
+					myChart.data.datasets[0].data[parseInt($('input[type="radio"]:checked').val())]++;
+					myChart.update();
+				}
+			});
+		});
+	});
+</script>
 </body>
 </html>

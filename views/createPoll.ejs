@@ -30,7 +30,7 @@
 </nav>
 
 <div class="container">
-	<div class="col-sm-6 col-offset-sm-3">
+	<div class="col-sm-8 col-offset-sm-2">
 		<h1>Create a Poll</h1>
 		
 		<% if (message.length > 0) { %>
@@ -43,9 +43,13 @@
 				<input type="text" class="form-control" name="title">
 			</div>
 			<div class="form-group">
+				<label>Description</label>
+				<textarea class="form-control" rows = "5" name="desc"></textarea>
+			</div>
+			<div class="form-group">
 				<label>Options</label>
-				<input type="text" class="form-control" name="opt1">
-				<input type="text" class="form-control" name="opt2">
+				<input type="text" class="form-control" name="opt1"><br>
+				<input type="text" class="form-control" name="opt2"><br>
 				<div id="extraOptions"></div>
 				<button type="button" id="addOption" class="btn btn-info">Add option</button>
 			</div>
@@ -57,7 +61,7 @@
 $(document).ready(function() {
 	var optCount = 3;
 	$('#addOption').click(function() {
-		$('#extraOptions').append('<input type="text" class="form-control" name="opt'+optCount+'">');
+		$('#extraOptions').append('<input type="text" class="form-control" name="opt'+optCount+'"><br>');
 		optCount++;
 	});
 });
