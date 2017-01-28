@@ -29,7 +29,7 @@
 				<tr id = '<%= poll._id %>'>
 					<td class="text-center"><a href="/viewpoll/<%=poll._id%>"><%=poll.title%></a></td>
 					<td class="text-center"><%=sum%></td>
-					<td class="text-center"><a href='/editPoll/<%=poll._id%>' class="btn btn-sm btn-warning">Edit</a>  <button type='button' class='btn btn-sm btn-danger btn-delete' value='<%=poll._id%>'>Delete</button></td>
+					<td class="text-center"><button type='button' class='btn btn-sm btn-danger btn-delete' value='<%=poll._id%>'>Delete</button></td>
 				</tr>
 		<% }); }%>
 			</tbody>

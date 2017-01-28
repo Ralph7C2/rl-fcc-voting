@@ -73,28 +73,6 @@ module.exports = function(app, passport) {
 		});
 	});
 	
-	app.get('/editPoll/:id', isLoggedIn, function(req, res) {
-		console.log("Edit Poll "+req.params.id);
-		pollController.getPollById(req.params.id).then(function(poll) {
-			console.log("In THEN: ");
-			console.log(poll);
-			if(poll) {
-				res.render('editPoll.ejs', {
-					user : req.user,
-					poll : poll,
-					message : req.flash('editPoll')
-				});
-			} else {
-				res.send("Hmm...I'm not sure what happened, but I cannot find that poll! <a href='/'>Go home?</a>");
-			}
-		}).fail(function() {
-			console.log("In Fail: ");
-			res.send("Hmm...I'm not sure what happened, but I cannot find that poll! <a href='/'>Go home?</a>");
-		});
-	});
-	
-	app.post('/editPoll/:id', isLoggedIn, pollController.updatePoll);
-	
 	function isLoggedIn(req, res, next) {
 		if(req.isAuthenticated())
 			return next();
