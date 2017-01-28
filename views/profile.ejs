@@ -1,22 +1,56 @@
 <!-- views/profile.ejs -->
 <!doctype html>
-<html>
-<head>
-    <title>Node Authentication</title>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
-    <style>
-        body        { padding-top:80px; word-wrap:break-word; }
-    </style>
-</head>
+<html lang="en">
+<%- include ./partials/head.ejs %>
 <body>
-<div class="container">
 
+<%- include ./partials/nav.ejs %>
+
+<div class="container">
     <div class="page-header text-center">
         <h1><span class="fa fa-anchor"></span> Profile Page</h1>
         <a href="/logout" class="btn btn-default btn-sm">Logout</a>
     </div>
-
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th class="text-center">Title</th>
+					<th class="text-center">Number of votes</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+		<% if(polls) { polls.forEach(function(poll) { 
+				var sum = 0;
+				for(var i = 0;i<poll.options.length;i++) {
+					sum+=poll.options[i].count;
+				}
+		%>
+				<tr id = '<%= poll._id %>'>
+					<td class="text-center"><a href="/viewpoll/<%=poll._id%>"><%=poll.title%></a></td>
+					<td class="text-center"><%=sum%></td>
+					<td class="text-center"><a href='/editPoll/<%=poll._id%>' class="btn btn-sm btn-warning">Edit</a>  <button type='button' class='btn btn-sm btn-danger btn-delete' value='<%=poll._id%>'>Delete</button></td>
+				</tr>
+		<% }); }%>
+			</tbody>
 </div>
+<script>
+$(document).ready(function() {
+	console.log("Creating live listener");
+	$('.btn-delete').on('click', function() {
+		$.post('/api/deletePoll', {
+			'pollId' : $(this).attr('value'),
+			'userId' : '<%= user._id %>'
+		}, function(res) {
+			if(res.success) {
+				$('#'+res.pollId).hide();
+				console.log(res);
+			} else {
+				console.log(res);
+			}
+		});
+	});
+});
+</script>
 </body>
 </html>

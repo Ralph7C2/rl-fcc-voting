@@ -8,35 +8,36 @@
 
 <div class="container">
 	<div class="col-sm-8 col-offset-sm-2">
-		<h1>Create a Poll</h1>
+		<h1>Edit a Poll</h1>
 		
 		<% if (message.length > 0) { %>
 			<div class="alert alert-danger"><%=message%></div>
 		<% } %>
 		
-		<form action='/createPoll' method='post'>
+		<form action='/editPoll/<%=poll._id%>' method='post'>
 			<div class="form-group">
 				<label>Title</label>
-				<input type="text" class="form-control" name="title">
+				<input type="text" class="form-control" name="title" value="<%=poll.title%>">
 			</div>
 			<div class="form-group">
 				<label>Description</label>
-				<textarea class="form-control" rows = "5" name="desc"></textarea>
+				<textarea class="form-control" rows = "5" name="desc"><%=poll.description%></textarea>
 			</div>
 			<div class="form-group">
 				<label>Options</label>
-				<input type="text" class="form-control" name="opt1"><br>
-				<input type="text" class="form-control" name="opt2"><br>
+				<% for(var i = 0;i<poll.options.length;i++) { %>
+				<input type="text" class="form-control" name="opt<%= i %>" value="<%=poll.options[i].opt%>"><button type="button" class="btn btn-sm btn-danger" val ="<%=i%>>Remove</button><br>
+				<% } %>
 				<div id="extraOptions"></div>
 				<button type="button" id="addOption" class="btn btn-info">Add option</button>
 			</div>
-			<button type="submit" class="btn btn-lg btn-primary">Create</button>
+			<button type="submit" class="btn btn-lg btn-primary">Save</button>
 		</form>
 	</div>
 </div>
 <script>
 $(document).ready(function() {
-	var optCount = 3;
+	var optCount = <%= poll.options.length+1 %>;
 	$('#addOption').click(function() {
 		$('#extraOptions').append('<input type="text" class="form-control" name="opt'+optCount+'"><br>');
 		optCount++;

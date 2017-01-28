@@ -13,5 +13,13 @@ router.post('/vote', function(req, res) {
 	});
 });
 
+router.post('/deletePoll', function(req, res) {
+	pollController.remove(req.body.pollId, req.body.userId).then(function() {
+		res.json({ 'success' : 'Poll deleted', 'pollId' : req.body.pollId });
+	}).fail(function() {
+		res.json({ 'fail' : 'Poll not deleted'});
+	});
+});
+
 
 module.exports = router;
