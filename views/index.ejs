@@ -2,6 +2,13 @@
 <!doctype html>
 <html lang = "en">
 <%- include ./partials/head.ejs %>
+<style>
+	.btn-success {
+		position:fixed;
+		bottom: 12px;
+		right: 10px;
+	}
+</style>
 <body>
 
 <%- include ./partials/nav.ejs %>
@@ -13,13 +20,16 @@
 		<p class="lead">View the list of polls and vote, or sign in to monitor your polls and create new ones!</p>
   </div>
 	<% } else { %>
-	<a href='/createPoll'>Create a poll!</a>
+	<a class="btn btn-success" href='/createPoll'>Create a poll!</a>
 	<% } %>
-	<ul>
+	<table class="table table-bordered">
+		<tr>
+			<th class="text-center">Title</th>
+		</tr>
 	<% for(i = 0;i<polls.length;i++) { %>
-		<li><a href='/viewPoll/<%= polls[i]._id %>'><%= polls[i].title %></a></li>
+		<tr><td><a href='/viewPoll/<%= polls[i]._id %>'><%= polls[i].title %></a></td><tr?
 		<% } %>
-	</ul>
+	</table>
 </div>
 </body>
 </html>

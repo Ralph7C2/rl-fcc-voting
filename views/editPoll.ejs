@@ -24,11 +24,17 @@
 				<textarea class="form-control" rows = "5" name="desc"><%=poll.description%></textarea>
 			</div>
 			<div class="form-group">
-				<label>Options</label>
+				<table class="table table-bordered">
+					<tr>
+						<th>Options</th>
+						<th></th>
+					</tr>
 				<% for(var i = 0;i<poll.options.length;i++) { %>
-				<input type="text" class="form-control" name="opt<%= i %>" value="<%=poll.options[i].opt%>"><button type="button" class="btn btn-sm btn-danger" val ="<%=i%>>Remove</button><br>
+				<tr id= '<%=i%>'>
+					<td><input type="text" class="form-control" name="opt<%= i %>" value="<%=poll.options[i].opt%>"></td><td><button type="button" class="btn btn-danger" val ="<%=i%>">Remove</button></td>
+				</tr>
 				<% } %>
-				<div id="extraOptions"></div>
+				</table>
 				<button type="button" id="addOption" class="btn btn-info">Add option</button>
 			</div>
 			<button type="submit" class="btn btn-lg btn-primary">Save</button>
@@ -37,10 +43,15 @@
 </div>
 <script>
 $(document).ready(function() {
-	var optCount = <%= poll.options.length+1 %>;
+	var optCount = <%= poll.options.length %>;
 	$('#addOption').click(function() {
-		$('#extraOptions').append('<input type="text" class="form-control" name="opt'+optCount+'"><br>');
+		$('.table').append('<tr id ="'+optCount+'"><td><input type="text" class="form-control" name="opt'+optCount+'"></td><td><button type="button" class="btn btn-danger" val='+optCount+'>Remove</button></td></tr>');
 		optCount++;
+	});
+	$('.btn-danger').on('click', function() {
+		var thisOpt = $(this).attr('val');
+		console.log(thisOpt);
+		$('#'+thisOpt).hide();
 	});
 });
 </script>
