@@ -20,28 +20,6 @@ service.createPoll = function(req, res) {
 	});
 };
 
-service.updatePoll = function(req, res) {
-	service.getPollById(req.params.id).then(function(poll) {
-		poll.title = req.body.title;
-		poll.description = req.body.desc;
-		var optCount = 1;
-		while(true) {
-			var optName = "optName"+optCount;
-			if(!req.body[optName]) break;
-				if(newPoll.options[optCount-1]) {
-					newPoll.options[optCount-1].opt = req.body[optName];
-				} else {
-					newPoll.options.push({opt : req.body[optName], count : 0});
-				}
-				optCount++;
-		}
-		poll.save(function(err) {
-			if(err) return res.send(err);
-			res.redirect('/viewPoll/'+req.params.id);
-		});
-	});
-};
-
 service.loadPolls = function(cb) {
 	Poll.find(function(err, polls) {
 		console.log("Loaded Polls");
@@ -82,7 +60,7 @@ service.getPollById = function(id) {
 	return deferred.promise;
 };
 
-service.vote = function(pollId, user, opt) {
+service.vote = function(pollId, user, opt, newOpt) {
 	var deferred = Q.defer();
 	
 	service.getPollById(pollId).then(function(poll) {
@@ -100,12 +78,18 @@ service.vote = function(pollId, user, opt) {
 			console.log("Beyond voter forEach loop!");
 			var options = poll.options;
 			console.log(options);
-			options[parseInt(opt)].count++;
-			console.log(options);
-			Poll.findOneAndUpdate({"_id" : pollId}, { options : options }, function(err, poll) {
-				if(err) console.log(err)
-				console.log(poll);
-			});
+			if(parseInt(opt) == options.length) {
+				console.log("Pushing new Option");
+				options.push({opt : newOpt, count: 1});
+			} else {
+				options[parseInt(opt)].count++;
+			
+				console.log(options);
+				Poll.findOneAndUpdate({"_id" : pollId}, { options : options }, function(err, poll) {
+					if(err) console.log(err)
+					console.log(poll);
+				});
+			}
 			poll.voters.push({voterId : user});
 			poll.save();
 			deferred.resolve(options[parseInt(opt)].opt);

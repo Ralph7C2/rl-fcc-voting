@@ -12,7 +12,7 @@
 	<div class="col-sm-6 col-offset-sm-3">
 <% if(poll) { %>
 	<h1><%= poll.title %></h1>
-<canvas id="myChart" width="400" height="400"></canvas>
+<canvas id="myChart" width="400" height="300"></canvas>
 <script>
 var ctx = document.getElementById("myChart");
 var myChart = new Chart(ctx, {
@@ -45,6 +45,10 @@ var myChart = new Chart(ctx, {
 				<label><input type="radio" name="voteOpt" value='<%=i%>'><%=poll.options[i].opt%></label>
 			</div>
 			<% } %>
+			<% if(user) { %>
+			<div id="newOption"></div>
+			<button type='button' class='btn btn-lg btn-info' id='addOption'>Add Option</button>
+			<% } %>
 			<button type='button' class='btn btn-lg btn-primary' id='voteButton'>Vote</button>
 		</form>
 <% } else { %>
@@ -58,16 +62,28 @@ var myChart = new Chart(ctx, {
 			$.post('/api/vote', {
 				'pollId' : '<%=poll._id %>',
 				'userId' : '<% if(user) {%><%=user._id%><% } else { %>IP<% } %>',
-				'opt'		 : $('input[type="radio"]:checked').val()
+				'opt'		 : $('input[type="radio"]:checked').val(),
+				'newOpt' : $('#newOpt').val()
 			}, function(res) {
 				if(res.success) {
-					myChart.data.datasets[0].data[parseInt($('input[type="radio"]:checked').val())]++;
+					if(res.usedNew) {
+						myChart.data.labels.push(res.option);
+						myChart.data.datasets[0].data.push(1);
+						console.log('<input type="radio" name="voteOpt" value="<%=poll.options.length%>">'+res.option);
+						$('#newLabel').html('<input type="radio" name="voteOpt" value="<%=poll.options.length%>">'+res.option);
+					} else {
+						myChart.data.datasets[0].data[parseInt($('input[type="radio"]:checked').val())]++;
+					}
 					myChart.update();
 					alert("Voted on "+res.option);
 				} else {
 					alert("You have already voted");
 				}
 			});
+		});
+		$('#addOption').click(function() {
+			$('#newOption').append("<div class='radio'><label id='newLabel'><input type='radio' name='voteOpt' value='<%=poll.options.length %>'><input type='text' id='newOpt'></label></div>");
+			$('#addOption').hide();
 		});
 	});
 </script>

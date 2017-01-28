@@ -3,9 +3,13 @@ var express = require('express');
 var router = express.Router();
 
 router.post('/vote', function(req, res) {
-	pollController.vote(req.body.pollId, (req.body.userId==='IP'?req.ip:req.body.userId), req.body.opt).then(function(votedOption) {
+	pollController.vote(req.body.pollId, (req.body.userId==='IP'?req.ip:req.body.userId), req.body.opt, req.body.newOpt).then(function(votedOption) {
 		console.log("Vote success, then");
-		res.json({'success' : 'Voted', 'option': votedOption});
+		if(req.body.newOpt === votedOption) {
+			res.json({'success' : 'Voted', 'option' : votedOption, 'usedNew' : true});
+		} else {
+			res.json({'success' : 'Voted', 'option': votedOption});
+		}
 	}).fail(function() {
 		console.log("Vote fail, fail");
 		console.log(req.body);
