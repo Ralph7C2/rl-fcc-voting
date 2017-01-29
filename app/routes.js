@@ -21,6 +21,12 @@ module.exports = function(app, passport) {
 		failureFlash : true
 	}));
 	
+	app.get('/auth/twitter', passport.authenticate('twitter'));
+	
+	app.get('/auth/twitter/callback', passport.authenticate('twitter', {failureRedirect: '/login'}), function(req, res) {
+		res.redirect('/');
+	});
+	
 	app.get('/signup', function(req, res) {
 		res.render('signup.ejs', {
 			message : req.flash('signupMessage'),

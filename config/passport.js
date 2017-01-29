@@ -1,4 +1,5 @@
 var LocalStrategy = require('passport-local').Strategy;
+var TwitterStrategy = require('passport-twitter').Strategy;
 var User = require('../app/models/user');
 
 module.exports = function(passport) {
@@ -55,6 +56,17 @@ module.exports = function(passport) {
 			if(!user.validPassword(password)) return done(null, false, req.flash('loginMessage', 'User or password is incorrect.'));
 			console.log("Login success");
 			return done(null, user);
+		});
+	}));
+	
+	passport.use(new TwitterStrategy({
+		consumerKey: process.env.TWITTER_CONSUMER_KEY,
+		consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
+		callbackURL: "https://rl-fcc-voting.herokuapp.com/auth/twitter/callback"
+	},
+	function(token, tokenSecret, profile, cb) {
+		User.findOrCreate({twitterId: profile.id}, function(err, user) {
+			return cb(err, user);
 		});
 	}));
 };
