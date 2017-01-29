@@ -6,6 +6,9 @@ var userSchema = mongoose.Schema({
 		email : String,
 		password : String
 	}
+	twitter : {
+		twitterId : String
+	}
 });
 
 userSchema.methods.generateHash = function(password) {

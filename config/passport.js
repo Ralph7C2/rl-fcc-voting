@@ -64,9 +64,20 @@ module.exports = function(passport) {
 		consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
 		callbackURL: "https://rl-fcc-voting.herokuapp.com/auth/twitter/callback"
 	},
-	function(token, tokenSecret, profile, cb) {
-		User.findOrCreate({twitterId : profile.id}, function(err, user) {
-			return cb(err, user);
+	function(token, tokenSecret, profile, done) {
+		User.findOne({twitter.twitterId : profile.id}, function(err, user) {
+			if(err) return done(err);
+			
+			if(!user) {
+				var newUser = new User();
+				newUser.twitter.twitterId = profile.id;
+				newUser.save(function(err) {
+					if(err) return done(err);
+				});
+				retrun done(err, user);
+			} else {
+				return done(err, user);
+			}
 		});
 	}));
 };
