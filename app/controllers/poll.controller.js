@@ -3,7 +3,6 @@ var Q = require('q');
 service = {};
 
 service.createPoll = function(req, pass, fail) {
-	console.log(req.body);
 	newPoll = new Poll();
 	if(req.body.title.trim().length===0) {
 		return fail('Title cannot be empty');
@@ -11,14 +10,15 @@ service.createPoll = function(req, pass, fail) {
 	newPoll.title = req.body.title;
 	newPoll.createdBy = req.user._id;
 	newPoll.description = req.body.desc;
-	var optCount = 1;
-	while(true) {
-		var optName = "opt"+optCount;
-		console.log("Checking "+optName);
-		optCount++;
-		if(!req.body[optName]) break;
-		if(req.body[optName].trim().length===0) continue;
+	var includedOpts = [];
+	for(var i = 1;i<=parseInt(req.body.numOpts);i++) {
+		var optName = "opt"+i;
+		if(!req.body[optName]) continue;
+		req.body[optName] = req.body[optName].trim();
+		console.log(optName+" is not empty");
+		if(includedOpts.indexOf(req.body[optName])!=-1) return fail('Cannot have two of the same option!');
 		newPoll.options.push({opt : req.body[optName], count : 0});
+		includedOpts.push(req.body[optName]);
 	}
 	if(newPoll.options.length < 2) {
 		console.log(newPoll.options.length);

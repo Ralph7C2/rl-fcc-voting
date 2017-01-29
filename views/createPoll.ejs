@@ -28,6 +28,7 @@
 				<input type="text" class="form-control" name="opt1"><br>
 				<input type="text" class="form-control" name="opt2"><br>
 				<div id="extraOptions"></div>
+				<input type="hidden" id="numOpts" name="numOpts" value="2">
 				<button type="button" id="addOption" class="btn btn-info">Add option</button>
 			</div>
 			<button type="submit" class="btn btn-lg btn-primary">Create</button>
@@ -39,6 +40,7 @@ $(document).ready(function() {
 	var optCount = 3;
 	$('#addOption').click(function() {
 		$('#extraOptions').append('<input type="text" class="form-control" name="opt'+optCount+'"><br>');
+		$('#numOpts').val(optCount);
 		optCount++;
 	});
 });
