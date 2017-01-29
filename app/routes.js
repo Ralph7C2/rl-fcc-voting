@@ -41,9 +41,7 @@ module.exports = function(app, passport) {
 	}));
 	
 	app.get('/profile', isLoggedIn, function(req, res) {
-		console.log("/profile! Calling load polls by user");
 		pollController.loadPollsByUser(req.user).then(function(polls) {
-			console.log("THEN! rendering!");
 			res.render('profile.ejs', {
 				user: req.user,
 				polls : polls
@@ -64,7 +62,14 @@ module.exports = function(app, passport) {
 		});
 	});
 	
-	app.post('/createPoll', isLoggedIn, pollController.createPoll);
+	app.post('/createPoll', isLoggedIn, function(req, res) {
+		pollController.createPoll(req, function(pollId) {
+			res.redirect('/viewPoll/'+pollId);
+		}, function(message) {
+			req.flash('createPollmessage', message);
+			res.redirect('/createPoll');
+		});
+	});
 	
 	app.get('/viewPoll/:id', function(req, res) {
 		pollController.getPollById(req.params.id).then(function(poll) {
