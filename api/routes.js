@@ -13,7 +13,7 @@ router.post('/vote', function(req, res) {
 	}).fail(function() {
 		console.log("Vote fail, fail");
 		console.log(req.body);
-		res.json({'failure' : 'Fialed'});
+		res.json({'failure' : 'Failed'});
 	});
 });
 
