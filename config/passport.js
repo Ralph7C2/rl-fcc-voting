@@ -65,7 +65,7 @@ module.exports = function(passport) {
 		callbackURL: "https://rl-fcc-voting.herokuapp.com/auth/twitter/callback"
 	},
 	function(token, tokenSecret, profile, done) {
-		User.findOne({twitter.twitterId : profile.id}, function(err, user) {
+		User.findOne({'twitter.twitterId' : profile.id}, function(err, user) {
 			if(err) return done(err);
 			
 			if(!user) {
