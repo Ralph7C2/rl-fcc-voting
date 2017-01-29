@@ -2,6 +2,11 @@
 <!doctype html>
 <html lang = "en">
 <%- include ./partials/head.ejs %>
+<style>
+	.twitter-share-button {
+		margin-top: 20px;
+	}
+</style>
 <body>
 
 <%- include ./partials/nav.ejs %>
@@ -51,6 +56,8 @@ var myChart = new Chart(ctx, {
 			<% } %>
 			<button type='button' class='btn btn-lg btn-primary' id='voteButton'>Vote</button>
 		</form>
+		
+		<a href="https://twitter.com/share" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 <% } else { %>
 	<h1>Error loading poll!!</h1>
 <% } %>
